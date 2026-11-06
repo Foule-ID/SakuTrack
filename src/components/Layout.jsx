@@ -1,6 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-const items = [['/', 'Dashboard', '🏠'], ['/transactions', 'Transactions', '💸'], ['/statistics', 'Statistics', '📊'], ['/savings', 'Savings Goals', '🎯'], ['/settings', 'Settings', '⚙️']];
+const items = [['/', 'Dashboard', '🏠'], ['/transactions', 'Transactions', '💸'], ['/statistics', 'Statistics', '📊'], ['/budgets', 'Budget Planner', '🧾'], ['/savings', 'Savings Goals', '🎯'], ['/settings', 'Settings', '⚙️']];
 export default function Layout() {
   const { sync } = useApp();
   return (

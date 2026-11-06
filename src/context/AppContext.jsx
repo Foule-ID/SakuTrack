@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase';
 const Ctx = createContext();
 export const useApp = () => useContext(Ctx);
 const num = (v) => (v == null ? null : Number(v));
-const empty = { tx: [], goals: [], accounts: [] };
+const empty = { tx: [], goals: [], accounts: [], budgets: [] };
 
 export function AppProvider({ children }) {
   const [session, setSession] = useState(undefined);
@@ -11,6 +11,7 @@ export function AppProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [sync, setSync] = useState({ state: 'idle', msg: 'Not synced yet' });
   const [toast, setToast] = useState(null);
+  const [budgetsError, setBudgetsError] = useState(null); // set when the budgets table is missing, so the rest of the app keeps working
   const [cur, setCurState] = useState(localStorage.getItem('saku.cur') || 'IDR');
   const setCur = (c) => { localStorage.setItem('saku.cur', c); setCurState(c); };
   const notify = useCallback((msg, type = 'ok') => { setToast({ msg, type }); setTimeout(() => setToast(null), 3500); }, []);
@@ -25,7 +26,9 @@ export function AppProvider({ children }) {
   const load = useCallback(async () => {
     if (!uid) return;
     setLoading(true);
+    const bp = supabase.from('budgets').select('*').order('created_at', { ascending: false });
     const [t, g, a] = await Promise.all(['transactions', 'goals', 'accounts'].map((n) => supabase.from(n).select('*').order('created_at', { ascending: false })));
+    const b = await bp; setBudgetsError(b.error ? b.error.message : null);
     const err = t.error || g.error || a.error;
     if (err) { setSync({ state: 'error', msg: err.message }); notify('Could not load your data: ' + err.message, 'err'); }
     else {
@@ -33,6 +36,7 @@ export function AppProvider({ children }) {
         tx: t.data.map((r) => ({ ...r, amount: Number(r.amount), to_amount: num(r.to_amount), rate: num(r.rate) })),
         goals: g.data.map((r) => ({ ...r, target_amount: Number(r.target_amount), saved: Number(r.saved) })),
         accounts: a.data,
+        budgets: b.error ? [] : b.data.map((r) => ({ ...r, amount: Number(r.amount) })),
       });
       setSync({ state: 'ok', msg: 'Synced at ' + new Date().toLocaleTimeString() });
     }
@@ -57,6 +61,9 @@ export function AppProvider({ children }) {
     delGoal: (id) => run(() => T('goals').delete().eq('id', id), 'Goal deleted'),
     addAccount: (name) => run(() => T('accounts').insert({ name }), 'Account added'),
     delAccount: (id) => run(() => T('accounts').delete().eq('id', id), 'Account removed'),
+    addBudget: (r) => run(() => T('budgets').insert(r), 'Budget created'),
+    updBudget: (id, r) => run(() => T('budgets').update(r).eq('id', id), 'Budget updated'),
+    delBudget: (id) => run(() => T('budgets').delete().eq('id', id), 'Budget deleted'),
     backup: () => run(() => T('backups').insert({ payload: { ...data, exported_at: new Date().toISOString() } }), 'Backup saved'),
     listBackups: () => T('backups').select('id,created_at').order('created_at', { ascending: false }).limit(10),
     // Restore merges: rows in the backup are written back by id; nothing else is deleted.
@@ -74,7 +81,7 @@ export function AppProvider({ children }) {
     signOut: () => supabase.auth.signOut(),
   };
   return (
-    <Ctx.Provider value={{ session, data, loading, sync, cur, setCur, notify, api }}>
+    <Ctx.Provider value={{ session, data, loading, sync, cur, setCur, notify, api, budgetsError }}>
       {children}
       {toast && <div className={'toast ' + toast.type} role="status">{toast.msg}</div>}
     </Ctx.Provider>

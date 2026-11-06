@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import Transactions from './pages/Transactions';
 import Statistics from './pages/Statistics';
 import Savings from './pages/Savings';
+import Budgets from './pages/Budgets';
 import Settings from './pages/Settings';
 
 function Gate() {
@@ -19,6 +20,7 @@ function Gate() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/transactions" element={<Transactions />} />
         <Route path="/statistics" element={<Statistics />} />
+        <Route path="/budgets" element={<Budgets />} />
         <Route path="/savings" element={<Savings />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="*" element={<Navigate to="/" />} />

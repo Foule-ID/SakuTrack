@@ -42,3 +42,11 @@ label{display:block;margin:.6rem 0;font-weight:500;font-size:.9rem}
  .main{padding:1rem 1rem 5.5rem}.grid3,.grid2{grid-template-columns:1fr}.row{flex-wrap:wrap}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Budget Planner */
+:root{--warn:#F0A04B}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.bar i.warn{background:var(--warn)}.bar i.over{background:var(--bad)}
+.pill{font-size:.78rem;font-weight:600;padding:.15rem .6rem;border-radius:99px}
+.pill.ok{background:var(--secondary);color:#2f7d4f}.pill.warn{background:#FCEBD6;color:#B26A12}.pill.over{background:#FBE1E1;color:#B84444}
+@media(max-width:800px){.grid4{grid-template-columns:repeat(2,1fr)}}

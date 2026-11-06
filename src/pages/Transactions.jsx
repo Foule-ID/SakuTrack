@@ -5,7 +5,7 @@ import { CURRENCIES, money, weekday, today, nowTime } from '../lib/format';
 import { cmpTx } from '../lib/stats';
 import TxRow from '../components/TxRow';
 
-const CATS = {
+export const CATS = {
   expense: ['Food', 'Transportation', 'Education', 'Entertainment', 'Shopping', 'Bills', 'Health', 'Other'],
   income: ['Salary', 'Allowance', 'Gift', 'Freelance', 'Other'],
   exchange: ['Exchange'],
