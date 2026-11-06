@@ -4,6 +4,8 @@ import { useApp } from '../context/AppContext';
 import { money } from '../lib/format';
 import { range, inRange, balance, sum, currencies, cmpTx, series } from '../lib/stats';
 import TxRow from '../components/TxRow';
+import EmptyState from '../components/EmptyState';
+import { PAGE_ART, EMPTY_ART, HERO_ART } from '../assets';
 export default function Dashboard() {
   const { data, loading, cur } = useApp(); const nav = useNavigate();
   if (loading && !data.tx.length) return <p className="muted">Loading your data…</p>;
@@ -14,7 +16,14 @@ export default function Dashboard() {
   const flow = series(data.tx.filter((t) => t.date >= start), cur, (d) => d.slice(0, 7));
   return (
     <>
-      <header className="head"><h1>Dashboard</h1><button className="btn" onClick={() => nav('/transactions?new=1')}>Add transaction</button></header>
+      <header className="head"><div className="titlebox"><img className="page-art" src={PAGE_ART.dashboard} alt="" /><h1>Dashboard</h1></div><button className="btn" onClick={() => nav('/transactions?new=1')}>Add transaction</button></header>
+      {!data.tx.length && !data.goals.length && !data.budgets.length && (
+        <div className="card hero">
+          {[[HERO_ART.manage, 'Track your money', 'Record income, expenses and exchanges.', '/transactions?new=1'], [HERO_ART.budget, 'Set a budget', 'Limit spending for each category.', '/budgets'], [HERO_ART.goal, 'Reach your goal', 'Save towards what matters.', '/savings']].map(([img, t, d, to]) => (
+            <button key={to} className="hero-item" onClick={() => nav(to)}><img src={img} alt="" /><strong>{t}</strong><span className="muted small">{d}</span></button>
+          ))}
+        </div>
+      )}
       <div className="grid3">
         <div className="card"><div className="muted">Total balance ({cur})</div><div className="big">{money(balance(data.tx, cur), cur)}</div>
           {others.map(([c, b]) => <div key={c} className="muted small">{money(b, c)}</div>)}</div>
@@ -27,10 +36,10 @@ export default function Dashboard() {
             : <p className="muted">Add a transaction in {cur} to see your cash flow.</p>}</div>
         <div className="card"><h2>Savings progress</h2>
           {data.goals.length ? data.goals.slice(0, 3).map((g) => <div key={g.id} className="goalmini"><div className="between"><span>{g.name}</span><span className="muted small">{Math.min(100, Math.round((g.saved / g.target_amount) * 100))}%</span></div><div className="bar"><i style={{ width: Math.min(100, (g.saved / g.target_amount) * 100) + '%' }} /></div></div>)
-            : <p className="muted">No goals yet. Create one under Savings Goals.</p>}</div>
+            : <EmptyState compact art={EMPTY_ART.goals} title="No savings goals yet" text="Create one under Savings Goals." />}</div>
       </div>
       <div className="card"><h2>Recent transactions</h2>
-        {recent.length ? <ul className="list">{recent.map((t) => <TxRow key={t.id} t={t} />)}</ul> : <p className="muted">Nothing recorded yet. Add your first transaction.</p>}</div>
+        {recent.length ? <ul className="list">{recent.map((t) => <TxRow key={t.id} t={t} />)}</ul> : <EmptyState art={EMPTY_ART.transactions} title="No transactions yet" text="Record your first transaction to start tracking your spending." />}</div>
     </>
   );
 }

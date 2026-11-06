@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { CURRENCIES, money } from '../lib/format';
+import EmptyState from '../components/EmptyState';
+import { PAGE_ART, EMPTY_ART } from '../assets';
 
 function GoalForm({ edit, onClose }) {
   const { api, notify, cur } = useApp();
@@ -38,8 +40,8 @@ export default function Savings() {
   };
   return (
     <>
-      <header className="head"><h1>Savings Goals</h1><button className="btn" onClick={() => setForm({})}>New goal</button></header>
-      {!data.goals.length && <div className="card"><p className="muted">No goals yet. Create one to track your progress.</p></div>}
+      <header className="head"><div className="titlebox"><img className="page-art" src={PAGE_ART.savings} alt="" /><h1>Savings Goals</h1></div><button className="btn" onClick={() => setForm({})}>New goal</button></header>
+      {!data.goals.length && <div className="card"><EmptyState art={EMPTY_ART.goals} title="No savings goals yet" text="Create a goal to track your progress." /></div>}
       <div className="grid2">{data.goals.map((g) => {
         const pct = Math.min(100, (g.saved / g.target_amount) * 100); const left = Math.max(0, g.target_amount - g.saved);
         return (

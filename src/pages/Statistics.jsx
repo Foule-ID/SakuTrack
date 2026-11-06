@@ -3,6 +3,7 @@ import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGri
 import { useApp } from '../context/AppContext';
 import { money } from '../lib/format';
 import { range, inRange, sum, byCategory, series, compare, r2 } from '../lib/stats';
+import { PAGE_ART } from '../assets';
 const COLORS = ['#4CAF73', '#A8D5B5', '#7A8A7E', '#E47777', '#DCEFE1', '#26352B', '#8BC9A0', '#C9A0A0'];
 
 function Cmp({ label, kind, tx, period, cur }) {
@@ -32,7 +33,7 @@ export default function Statistics() {
   const top = mcats[0];
   return (
     <>
-      <header className="head"><h1>Statistics</h1><div className="seg">{['day', 'week', 'month', 'year'].map((x) => <button key={x} className={p === x ? 'on' : ''} onClick={() => setP(x)}>{x[0].toUpperCase() + x.slice(1)}</button>)}</div></header>
+      <header className="head"><div className="titlebox"><img className="page-art" src={PAGE_ART.statistics} alt="" /><h1>Statistics</h1></div><div className="seg">{['day', 'week', 'month', 'year'].map((x) => <button key={x} className={p === x ? 'on' : ''} onClick={() => setP(x)}>{x[0].toUpperCase() + x.slice(1)}</button>)}</div></header>
       <p className="muted small">Showing {cur} transactions only. Change the main currency in Settings.</p>
       <div className="grid3">
         <div className="card"><div className="muted">Income</div><div className="big pos">{money(inc, cur)}</div></div>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useApp } from '../context/AppContext';
+import { BRAND, AUTH_ART, DECOR } from '../assets';
 export default function Auth() {
   const { notify } = useApp();
   const [mode, setMode] = useState('login');
@@ -23,8 +24,10 @@ export default function Auth() {
   };
   return (
     <div className="center">
+      <img className="decor-sprig" src={DECOR.sprig} alt="" aria-hidden="true" />
       <form className="card auth" onSubmit={submit}>
-        <h1>SakuTrack</h1>
+        <img className="auth-art" src={AUTH_ART} alt="" />
+        <div className="auth-brand"><img src={BRAND.icon} alt="" /><h1>SakuTrack</h1></div>
         <p className="muted">{mode === 'login' ? 'Sign in to your account' : mode === 'register' ? 'Create your account' : 'Reset your password'}</p>
         {mode === 'register' && <label>Name<input value={f.name} onChange={set('name')} /></label>}
         <label>Email<input type="email" required value={f.email} onChange={set('email')} /></label>

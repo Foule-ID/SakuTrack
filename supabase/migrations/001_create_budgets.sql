@@ -1,3 +1,5 @@
+-- Budget Planner migration. Safe to run once on an existing SakuTrack database.
+-- Only creates the new "budgets" table; existing tables are not touched.
 create table if not exists public.budgets (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null default auth.uid() references auth.users on delete cascade,

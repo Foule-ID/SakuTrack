@@ -4,6 +4,8 @@ import { CURRENCIES, money } from '../lib/format';
 import { r2 } from '../lib/stats';
 import { track, periodRange, LABEL } from '../lib/budget';
 import { CATS } from './Transactions';
+import EmptyState from '../components/EmptyState';
+import { PAGE_ART, EMPTY_ART, STATUS_ICONS } from '../assets';
 
 function BudgetForm({ edit, onClose }) {
   const { api, notify, cur } = useApp();
@@ -48,7 +50,7 @@ export default function Budgets() {
 
   return (
     <>
-      <header className="head"><h1>Budget Planner</h1><div className="acts"><div className="seg">{['weekly', 'monthly'].map((p) => <button key={p} className={view === p ? 'on' : ''} onClick={() => setView(p)}>{p[0].toUpperCase() + p.slice(1)}</button>)}</div>
+      <header className="head"><div className="titlebox"><img className="page-art" src={PAGE_ART.budgets} alt="" /><h1>Budget Planner</h1></div><div className="acts"><div className="seg">{['weekly', 'monthly'].map((p) => <button key={p} className={view === p ? 'on' : ''} onClick={() => setView(p)}>{p[0].toUpperCase() + p.slice(1)}</button>)}</div>
         <button className="btn" onClick={() => setForm({})} disabled={!!budgetsError}>New budget</button></div></header>
       {budgetsError && <div className="card"><h2>Budget Planner needs one database step</h2><p className="muted">Run <code>supabase/migrations/001_create_budgets.sql</code> in the Supabase SQL editor, then reload. Details: {budgetsError}</p></div>}
       <p className="muted small">Spending for {a} to {b}. Totals are in {cur}{other ? `; ${other} budget${other > 1 ? 's' : ''} in other currencies ${other > 1 ? 'are' : 'is'} not included in the totals` : ''}.</p>
@@ -58,14 +60,14 @@ export default function Budgets() {
         <div className="card"><div className="muted">Remaining</div><div className={'big ' + (total - spent < 0 ? 'neg' : 'pos')}>{money(r2(total - spent), cur)}</div></div>
         <div className="card"><div className="muted">Exceeded budgets</div><div className={'big ' + (exceeded ? 'neg' : 'pos')}>{exceeded}</div></div>
       </div>
-      {loading && !data.tx.length ? <p className="muted">Loading…</p> : !list.length ? <div className="card"><p className="muted">No {view} budgets yet. Create one to set a spending limit for a category.</p></div> : (
+      {loading && !data.tx.length ? <p className="muted">Loading…</p> : !list.length ? <div className="card"><EmptyState art={EMPTY_ART.budgets} title={`No ${view} budgets yet`} text="Create a budget to set a spending limit for a category." /></div> : (
         <div className="grid2">{list.map((x) => (
           <div className="card" key={x.id}>
             <div className="between"><div><h2 style={{ margin: 0 }}>{x.name || x.category}</h2><div className="muted small">{x.category}, {x.period}, {x.currency}</div></div>
               <div className="acts"><button className="ghost" onClick={() => setForm(x)}>Edit</button><button className="ghost danger" onClick={() => del(x)}>Delete</button></div></div>
             <div className="bar"><i className={x.lv} style={{ width: Math.min(100, x.pct) + '%' }} /></div>
             <div className="between"><span>{money(x.spent, x.currency)} of {money(x.amount, x.currency)}</span><b>{Math.floor(x.pct)}%</b></div>
-            <div className="between"><span className={'pill ' + x.lv}>{LABEL[x.lv]}</span><span className="muted small">{x.left >= 0 ? `${money(x.left, x.currency)} left` : `${money(-x.left, x.currency)} over`}</span></div>
+            <div className="between"><span className={'pill ' + x.lv}><img className="pill-icon" src={STATUS_ICONS[x.lv]} alt="" />{LABEL[x.lv]}</span><span className="muted small">{x.left >= 0 ? `${money(x.left, x.currency)} left` : `${money(-x.left, x.currency)} over`}</span></div>
           </div>))}</div>
       )}
       {form && <BudgetForm key={form.id || 'new'} edit={form.id ? form : null} onClose={() => setForm(null)} />}
