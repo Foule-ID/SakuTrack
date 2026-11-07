@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import { BRAND, NAV_ICONS } from '../assets';
 // [path, label, short label for the mobile tab bar]
 const groups = [
-  ['Menu', [['/', 'Dashboard', 'Dashboard'], ['/transactions', 'Transactions', 'Transactions'], ['/statistics', 'Statistics', 'Stats']]],
+  ['Menu', [['/', 'Dashboard', 'Dashboard'], ['/transactions', 'Transactions', 'Transactions'], ['/statistics', 'Statistics', 'Stats'], ['/calendar', 'Transaction Calendar', 'Calendar']]],
   ['Planning', [['/budgets', 'Budget Planner', 'Budget'], ['/savings', 'Savings Goals', 'Savings']]],
   ['Preferences', [['/settings', 'Settings', 'Settings']]],
 ];

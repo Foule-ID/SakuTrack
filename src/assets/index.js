@@ -8,6 +8,9 @@ import navStatistics from './icons/navigation/nav-statistics.png';
 import navBudget from './icons/navigation/nav-budget-planner.png';
 import navSavings from './icons/navigation/nav-savings-goals.png';
 import navSettings from './icons/navigation/nav-settings.png';
+import navCalendar from './icons/navigation/nav-calendar.png';
+import navCalendarOn from './icons/navigation/nav-calendar-active.png';
+import calendarArt from './icons/features/feature-transaction-calendar.png';
 import navDashboardOn from './icons/navigation/nav-dashboard-active.png';
 import navTransactionsOn from './icons/navigation/nav-transactions-active.png';
 import navStatisticsOn from './icons/navigation/nav-statistics-active.png';
@@ -44,7 +47,7 @@ import sprig from './backgrounds/decor-leaf-sprig.png';
 
 export const BRAND = { icon: iconDark, wordmark };
 export const NAV_ICONS = {
-  '/': [navDashboard, navDashboardOn], '/transactions': [navTransactions, navTransactionsOn], '/statistics': [navStatistics, navStatisticsOn],
+  '/': [navDashboard, navDashboardOn], '/transactions': [navTransactions, navTransactionsOn], '/statistics': [navStatistics, navStatisticsOn], '/calendar': [navCalendar, navCalendarOn],
   '/budgets': [navBudget, navBudgetOn], '/savings': [navSavings, navSavingsOn], '/settings': [navSettings, navSettingsOn],
 };
 const CATEGORY_ICONS = { Food: catFood, Transportation: catTransport, Shopping: catShopping, Entertainment: catEntertainment, Education: catEducation, Health: catHealth, Bills: catBills, Gift: catGift, Other: catOther };
@@ -54,4 +57,5 @@ export const PAGE_ART = { dashboard: pageDashboard, statistics: pageStatistics, 
 export const EMPTY_ART = { transactions: emptyTx, budgets: emptyBudgets, goals: emptyGoals };
 export const HERO_ART = { manage: heroManage, budget: heroBudget, goal: heroGoal };
 export const AUTH_ART = authArt;
+export const CALENDAR_ART = calendarArt;
 export const DECOR = { sprig };
