@@ -5,6 +5,8 @@ import { r2 } from '../lib/stats';
 import { track, periodRange, LABEL } from '../lib/budget';
 import { CATS } from './Transactions';
 import EmptyState from '../components/EmptyState';
+import StatCard from '../components/StatCard';
+import Loading from '../components/Loading';
 import { PAGE_ART, EMPTY_ART, STATUS_ICONS } from '../assets';
 
 function BudgetForm({ edit, onClose }) {
@@ -55,12 +57,12 @@ export default function Budgets() {
       {budgetsError && <div className="card"><h2>Budget Planner needs one database step</h2><p className="muted">Run <code>supabase/migrations/001_create_budgets.sql</code> in the Supabase SQL editor, then reload. Details: {budgetsError}</p></div>}
       <p className="muted small">Spending for {a} to {b}. Totals are in {cur}{other ? `; ${other} budget${other > 1 ? 's' : ''} in other currencies ${other > 1 ? 'are' : 'is'} not included in the totals` : ''}.</p>
       <div className="grid4">
-        <div className="card"><div className="muted">Total budget</div><div className="big">{money(total, cur)}</div></div>
-        <div className="card"><div className="muted">Total spent</div><div className="big neg">{money(spent, cur)}</div></div>
-        <div className="card"><div className="muted">Remaining</div><div className={'big ' + (total - spent < 0 ? 'neg' : 'pos')}>{money(r2(total - spent), cur)}</div></div>
-        <div className="card"><div className="muted">Exceeded budgets</div><div className={'big ' + (exceeded ? 'neg' : 'pos')}>{exceeded}</div></div>
+        <StatCard tone="balance" label="Total budget" value={money(total, cur)} />
+        <StatCard tone="expense" label="Total spent" value={money(spent, cur)} />
+        <StatCard tone={total - spent < 0 ? 'expense' : 'income'} label="Remaining" value={money(r2(total - spent), cur)} />
+        <StatCard tone={exceeded ? 'warn' : 'neutral'} label="Exceeded budgets" value={exceeded} />
       </div>
-      {loading && !data.tx.length ? <p className="muted">Loading…</p> : !list.length ? <div className="card"><EmptyState art={EMPTY_ART.budgets} title={`No ${view} budgets yet`} text="Create a budget to set a spending limit for a category." /></div> : (
+      {loading && !data.tx.length ? <Loading rows /> : !list.length ? <div className="card"><EmptyState art={EMPTY_ART.budgets} title={`No ${view} budgets yet`} text="Create a budget to set a spending limit for a category." /></div> : (
         <div className="grid2">{list.map((x) => (
           <div className="card" key={x.id}>
             <div className="between"><div><h2 style={{ margin: 0 }}>{x.name || x.category}</h2><div className="muted small">{x.category}, {x.period}, {x.currency}</div></div>

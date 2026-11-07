@@ -5,10 +5,12 @@ import { money } from '../lib/format';
 import { range, inRange, balance, sum, currencies, cmpTx, series } from '../lib/stats';
 import TxRow from '../components/TxRow';
 import EmptyState from '../components/EmptyState';
+import StatCard from '../components/StatCard';
+import Loading from '../components/Loading';
 import { PAGE_ART, EMPTY_ART, HERO_ART } from '../assets';
 export default function Dashboard() {
   const { data, loading, cur } = useApp(); const nav = useNavigate();
-  if (loading && !data.tx.length) return <p className="muted">Loading your data…</p>;
+  if (loading && !data.tx.length) return <Loading />;
   const mtx = inRange(data.tx, range('month'));
   const others = currencies(data.tx).filter((c) => c !== cur).map((c) => [c, balance(data.tx, c)]).filter(([, b]) => b);
   const recent = [...data.tx].sort(cmpTx).slice(0, 5);
@@ -24,11 +26,11 @@ export default function Dashboard() {
           ))}
         </div>
       )}
-      <div className="grid3">
-        <div className="card"><div className="muted">Total balance ({cur})</div><div className="big">{money(balance(data.tx, cur), cur)}</div>
-          {others.map(([c, b]) => <div key={c} className="muted small">{money(b, c)}</div>)}</div>
-        <div className="card"><div className="muted">Income this month</div><div className="big pos">{money(sum(mtx, 'income', cur), cur)}</div></div>
-        <div className="card"><div className="muted">Expenses this month</div><div className="big neg">{money(sum(mtx, 'expense', cur), cur)}</div></div>
+      <div className="summary">
+        <StatCard tone="balance" label={`Total balance (${cur})`} value={money(balance(data.tx, cur), cur)}>
+          {others.map(([c, b]) => <div key={c} className="stat-sub">{money(b, c)}</div>)}</StatCard>
+        <StatCard tone="income" label="Income this month" value={money(sum(mtx, 'income', cur), cur)} />
+        <StatCard tone="expense" label="Expenses this month" value={money(sum(mtx, 'expense', cur), cur)} />
       </div>
       <div className="grid2">
         <div className="card"><h2>Cash flow, last 6 months</h2>

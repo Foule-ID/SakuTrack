@@ -12,7 +12,7 @@ import Settings from './pages/Settings';
 
 function Gate() {
   const { session } = useApp();
-  if (session === undefined) return <div className="center muted">Loading…</div>;
+  if (session === undefined) return <div className="center"><span className="spinner" role="status" aria-label="Loading" /></div>;
   if (!session) return <Auth />;
   return (
     <Routes>

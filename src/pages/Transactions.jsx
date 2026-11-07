@@ -5,6 +5,7 @@ import { CURRENCIES, money, weekday, today, nowTime } from '../lib/format';
 import { cmpTx } from '../lib/stats';
 import TxRow from '../components/TxRow';
 import EmptyState from '../components/EmptyState';
+import Loading from '../components/Loading';
 import { EMPTY_ART } from '../assets';
 
 export const CATS = {
@@ -93,7 +94,7 @@ export default function Transactions() {
       <div className="filters"><input placeholder="Search" value={q} onChange={(e) => setQ(e.target.value)} />
         <select value={type} onChange={(e) => setType(e.target.value)}><option value="all">All types</option><option value="income">Income</option><option value="expense">Expense</option><option value="exchange">Exchange</option></select></div>
       <div className="card">
-        {loading && !data.tx.length ? <p className="muted">Loading…</p> : list.length ? <ul className="list">{list.map((t) => <TxRow key={t.id} t={t} onEdit={setForm} onDelete={del} />)}</ul> : data.tx.length ? <p className="muted">No transactions match your filters.</p> : <EmptyState art={EMPTY_ART.transactions} title="No transactions yet" text="Add your first transaction to start tracking." />}
+        {loading && !data.tx.length ? <Loading rows /> : list.length ? <ul className="list">{list.map((t) => <TxRow key={t.id} t={t} onEdit={setForm} onDelete={del} />)}</ul> : data.tx.length ? <p className="muted">No transactions match your filters.</p> : <EmptyState art={EMPTY_ART.transactions} title="No transactions yet" text="Add your first transaction to start tracking." />}
       </div>
       {form && <TxForm key={form.id || 'new'} edit={form.id ? form : null} onClose={() => setForm(null)} />}
     </>
