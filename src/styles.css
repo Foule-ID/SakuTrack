@@ -190,3 +190,32 @@ label .muted{font-weight:400}
   .summary .stat-value{font-size:clamp(1.05rem,4.8vw,1.6rem)}.summary>.stat:first-child .stat-value{font-size:clamp(1.4rem,6.5vw,1.8rem)}
 }
 @media(max-width:339px){.summary{grid-template-columns:1fr}}
+
+/* Savings contribution planner */
+.goal .bar{height:12px}
+.pill.neutral{background:#E8EFE9;color:var(--muted)}
+.planner{margin:.9rem 0;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--tint)}
+.planner>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:.5rem;padding:.7rem .85rem;font-weight:700;font-size:.9rem}
+.planner>summary::-webkit-details-marker{display:none}
+.planner>summary .pill{margin-left:auto}
+.planner>summary::after{content:'▾';color:var(--muted);transition:transform .15s}
+.planner[open]>summary::after{transform:rotate(180deg)}
+.planner-body{padding:0 .85rem .9rem}
+.planner-msg{margin:0 0 .75rem;font-size:.9rem}
+.planner-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:0 0 .75rem}
+.planner-facts>div{background:#fff;border-radius:10px;padding:.5rem .65rem;min-width:0}
+.planner-facts dt{font-size:.72rem;color:var(--muted)}.planner-facts dd{margin:0;font-weight:700;font-size:.86rem;overflow-wrap:anywhere}
+.planner-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
+.planner-tile{background:#fff;border:1px solid var(--secondary);border-radius:10px;padding:.55rem .65rem;min-width:0}
+.planner-tile span{display:block;font-size:.72rem;color:var(--muted)}
+.planner-tile b{display:block;font-size:.92rem;color:var(--brand-dark);overflow-wrap:anywhere}
+.planner-tile.zero b{color:var(--muted)}
+.planner-note{margin:.6rem 0 0;font-size:.76rem;color:var(--muted)}
+/* The planner adapts to its own width: three columns when there is room, label/value rows when narrow */
+.planner-body{container-type:inline-size}
+@container (max-width: 420px){
+  .planner-facts,.planner-tiles{grid-template-columns:1fr}
+  .planner-facts>div,.planner-tile{display:flex;justify-content:space-between;align-items:baseline;gap:.75rem}
+  .planner-facts dd,.planner-tile b{text-align:right}
+}
+

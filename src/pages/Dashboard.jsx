@@ -16,6 +16,9 @@ export default function Dashboard() {
   const recent = [...data.tx].sort(cmpTx).slice(0, 5);
   const start = range('month', -5)[0];
   const flow = series(data.tx.filter((t) => t.date >= start), cur, (d) => d.slice(0, 7));
+  // Zero rows for the same six months keep the axes visible when there is no data. They are axis positions, not transactions.
+  const noFlow = !flow.length;
+  const chartData = noFlow ? [-5, -4, -3, -2, -1, 0].map((o) => ({ name: range('month', o)[0].slice(0, 7), Income: 0, Expenses: 0 })) : flow;
   return (
     <>
       <header className="head"><div className="titlebox"><img className="page-art" src={PAGE_ART.dashboard} alt="" /><h1>Dashboard</h1></div><button className="btn" onClick={() => nav('/transactions?new=1')}>Add transaction</button></header>
@@ -34,8 +37,19 @@ export default function Dashboard() {
       </div>
       <div className="grid2">
         <div className="card"><h2>Cash flow, last 6 months</h2>
-          {flow.length ? <ResponsiveContainer width="100%" height={240}><BarChart data={flow}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="name" /><YAxis width={60} /><Tooltip formatter={(v) => money(v, cur)} /><Bar dataKey="Income" fill="#4CAF73" radius={[6, 6, 0, 0]} /><Bar dataKey="Expenses" fill="#E47777" radius={[6, 6, 0, 0]} /></BarChart></ResponsiveContainer>
-            : <p className="muted">Add a transaction in {cur} to see your cash flow.</p>}</div>
+          <div className="chartbox">
+            <ResponsiveContainer width="100%" height={240}>
+              <BarChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis dataKey="name" />
+                <YAxis width={60} domain={noFlow ? [0, 100] : undefined} ticks={noFlow ? [0, 25, 50, 75, 100] : undefined} tickFormatter={noFlow ? (v) => (v === 0 ? '0' : '') : undefined} />
+                {!noFlow && <Tooltip formatter={(v) => money(v, cur)} />}
+                <Bar dataKey="Income" fill="#4CAF73" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="Expenses" fill="#E47777" radius={[6, 6, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+            {noFlow && <div className="chart-empty"><span>No {cur} transactions yet</span></div>}
+          </div></div>
         <div className="card"><h2>Savings progress</h2>
           {data.goals.length ? data.goals.slice(0, 3).map((g) => <div key={g.id} className="goalmini"><div className="between"><span>{g.name}</span><span className="muted small">{Math.min(100, Math.round((g.saved / g.target_amount) * 100))}%</span></div><div className="bar"><i style={{ width: Math.min(100, (g.saved / g.target_amount) * 100) + '%' }} /></div></div>)
             : <EmptyState compact art={EMPTY_ART.goals} title="No savings goals yet" text="Create one under Savings Goals." />}</div>

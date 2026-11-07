@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { CURRENCIES, money } from '../lib/format';
 import EmptyState from '../components/EmptyState';
+import ContributionPlanner from '../components/ContributionPlanner';
+import { planGoal, localToday, dayKey } from '../lib/savingsPlan';
 import { PAGE_ART, EMPTY_ART } from '../assets';
 
 function GoalForm({ edit, onClose }) {
@@ -33,6 +35,8 @@ function GoalForm({ edit, onClose }) {
 export default function Savings() {
   const { data, api, notify } = useApp();
   const [form, setForm] = useState(null); const [add, setAdd] = useState({});
+  const [, setDay] = useState(dayKey()); // re-render when the date changes so day counts stay current
+  useEffect(() => { const t = setInterval(() => setDay(dayKey()), 60000); return () => clearInterval(t); }, []);
   const deposit = async (g) => {
     const v = Number(add[g.id]);
     if (!(v > 0)) return notify('Enter an amount above zero', 'err');
@@ -43,13 +47,13 @@ export default function Savings() {
       <header className="head"><div className="titlebox"><img className="page-art" src={PAGE_ART.savings} alt="" /><h1>Savings Goals</h1></div><button className="btn" onClick={() => setForm({})}>New goal</button></header>
       {!data.goals.length && <div className="card"><EmptyState art={EMPTY_ART.goals} title="No savings goals yet" text="Create a goal to track your progress." /></div>}
       <div className="grid2">{data.goals.map((g) => {
-        const pct = Math.min(100, (g.saved / g.target_amount) * 100); const left = Math.max(0, g.target_amount - g.saved);
+        const plan = planGoal(g, localToday());
         return (
-          <div className="card" key={g.id}>
+          <div className="card goal" key={g.id}>
             <div className="between"><h2>{g.name}</h2><div className="acts"><button className="ghost" onClick={() => setForm(g)}>Edit</button><button className="ghost danger" onClick={() => confirm(`Delete "${g.name}"?`) && api.delGoal(g.id).catch(() => {})}>Delete</button></div></div>
-            <div className="bar"><i style={{ width: pct + '%' }} /></div>
-            <div className="between"><span>{money(g.saved, g.currency)} of {money(g.target_amount, g.currency)}</span><b>{Math.round(pct)}%</b></div>
-            <p className="muted small">{left ? `${money(left, g.currency)} to go` : 'Goal reached'}{g.target_date ? `, target ${g.target_date}` : ''}</p>
+            <div className="bar"><i style={{ width: plan.progressPct + '%' }} /></div>
+            <div className="between"><span>{money(g.saved, g.currency)} of {money(g.target_amount, g.currency)}</span><b>{plan.progressLabel}%</b></div>
+            <ContributionPlanner goal={g} plan={plan} onEdit={setForm} />
             <div className="two"><input type="number" step="any" min="0" placeholder="Amount to add" value={add[g.id] || ''} onChange={(e) => setAdd({ ...add, [g.id]: e.target.value })} /><button className="btn" onClick={() => deposit(g)}>Add money</button></div>
           </div>
         );
