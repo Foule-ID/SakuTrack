@@ -119,14 +119,6 @@ label .muted{font-weight:400}
 .hero-item{display:flex;flex-direction:column;align-items:center;gap:.25rem;background:none;border:0;border-radius:var(--r);padding:.75rem;cursor:pointer;transition:background .15s}
 .hero-item:hover{background:var(--tint)}.hero-item img{height:110px;width:auto;max-width:100%;object-fit:contain}
 
-/* auth */
-.center:has(.auth){background:radial-gradient(900px 500px at 15% 0%,#E4F3E8,transparent 60%),var(--bg)}
-.auth{width:100%;max-width:400px;padding:1.75rem}
-.auth-art{display:block;margin:0 auto .5rem;width:170px;max-width:60%;height:auto}
-.auth-brand{display:flex;align-items:center;justify-content:center;gap:.6rem}.auth-brand img{width:38px;height:38px}
-.auth .btn{width:100%;margin-top:.6rem}.auth>p{text-align:center;margin:.25rem 0 .75rem}
-.links{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:1rem;font-size:.85rem}
-.decor-sprig{position:fixed;right:2rem;bottom:0;height:146px;width:auto;opacity:.6;pointer-events:none}
 
 .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);max-width:calc(100vw - 2rem);background:var(--text);color:#fff;padding:.75rem 1.1rem;border-radius:var(--r-sm);z-index:60;box-shadow:var(--shadow);font-size:.92rem}.toast.err{background:var(--bad)}
 

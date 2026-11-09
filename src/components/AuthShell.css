@@ -1,0 +1,44 @@
+/* Authentication layout and controls. Imported by AuthShell.jsx, so it ships and loads with the auth components. */
+.authshell{
+  --c-brand:var(--brand,#2A8F55);--c-text:var(--text,#1F2F25);--c-muted:var(--muted,#627468);--c-line:var(--line,#E3ECE5);
+  --c-tint:var(--tint,#EEF7F0);--c-secondary:var(--secondary,#DCEFE1);--c-surface:var(--surface,#fff);--c-radius:var(--r-sm,12px);
+  min-height:100vh;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);color:var(--c-text);
+}
+.auth-brandpanel{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;gap:2rem;padding:2.5rem 3rem;color:var(--c-text);
+  background:radial-gradient(700px 420px at 0% 0%,#CDE9D5,transparent 65%),radial-gradient(600px 400px at 100% 100%,#BFE3CB,transparent 60%),linear-gradient(160deg,#EAF6EE,#DCEFE1)}
+.ab-top{display:flex;align-items:center;gap:.7rem;font-size:1.35rem;font-weight:700}
+.ab-top img{width:40px;height:40px}
+.ab-body{max-width:460px;position:relative;z-index:1;margin:auto 0}
+.ab-body h2{font-size:clamp(1.8rem,3vw,2.5rem);line-height:1.15;margin:0 0 .9rem;letter-spacing:-.02em;color:#173C27}
+.ab-lead{font-size:1.02rem;color:#3C5546;margin:0 0 1.5rem;max-width:42ch}
+.ab-art{display:block;width:260px;max-width:70%;height:auto;margin:0 0 1.25rem}
+.ab-points{list-style:none;margin:0;padding:0;display:grid;gap:.7rem}
+.ab-points li{display:flex;align-items:center;gap:.65rem;font-weight:500}
+.ab-points img{width:20px;height:20px;flex:none}
+.ab-sprig{position:absolute;right:1.5rem;bottom:0;height:146px;width:auto;opacity:.7;pointer-events:none}
+.auth-formpanel{display:flex;flex-direction:column;padding:1.25rem 1.5rem 2rem;background:var(--c-surface)}
+.auth-top{display:flex;justify-content:flex-end}
+.auth-card{width:100%;max-width:400px;margin:auto;padding:1rem 0}
+.auth-card h1{font-size:1.7rem;margin:0}
+.auth-sub{color:var(--c-muted);margin:.35rem 0 1.4rem}
+.sbtns{display:grid;gap:.65rem}
+.sbtn{display:flex;align-items:center;justify-content:center;gap:.65rem;width:100%;min-height:48px;padding:.6rem 1rem;border-radius:var(--c-radius);font:inherit;font-weight:600;cursor:pointer;border:1px solid #D2E0D6;background:#fff;color:var(--c-text);transition:background .15s}
+.sbtn:hover{background:var(--c-tint)}
+.sbtn:disabled{opacity:.6;cursor:wait}
+.sbtn svg{width:20px;height:20px;flex:none}
+.sbtn.apple{background:#000;color:#fff;border-color:#000}
+.sbtn.apple:hover{background:#222}
+.divider{display:flex;align-items:center;gap:.8rem;margin:1.2rem 0;color:var(--c-muted);font-size:.8rem}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--c-line)}
+.auth-forgot{text-align:right;margin:-.2rem 0 .2rem}
+.auth-card .btn.full{width:100%;margin-top:.8rem}
+.auth-foot{text-align:center;margin:1.2rem 0 0;font-size:.9rem;color:var(--c-muted)}
+@media(max-width:900px){
+  .authshell{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .auth-brandpanel{padding:1.1rem 1.25rem;gap:.5rem}
+  .ab-lead,.ab-art,.ab-points,.ab-sprig{display:none}
+  .ab-body{margin:0}
+  .ab-body h2{font-size:1.35rem;margin:0}
+  .auth-formpanel{padding:1rem 1.25rem 2rem}
+  .auth-card{padding:.5rem 0}
+}

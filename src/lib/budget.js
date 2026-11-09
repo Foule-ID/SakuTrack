@@ -1,7 +1,6 @@
 import { range, inRange, r2 } from './stats';
 // Below 80% ok, 80-99.99% warn, 100%+ over
 export const level = (pct) => (pct >= 100 ? 'over' : pct >= 80 ? 'warn' : 'ok');
-export const LABEL = { ok: 'Within budget', warn: 'Approaching budget limit', over: 'Budget exceeded' };
 export const periodRange = (period) => range(period === 'weekly' ? 'week' : 'month');
 // Counts only expense transactions that match the budget's category and currency, inside the budget's current period
 export function track(b, tx) {

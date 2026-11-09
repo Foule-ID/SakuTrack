@@ -1,38 +1,40 @@
-import { money } from '../lib/format';
-const fmtDate = (d) => d.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
-const days = (n) => `${n} day${n === 1 ? '' : 's'}`;
-const PILL = { achieved: ['ok', 'Goal achieved'], active: ['ok', 'In progress'], today: ['warn', 'Due today'], overdue: ['over', 'Overdue'], 'no-deadline': ['neutral', 'No deadline'], 'invalid-target': ['over', 'Invalid target'] };
+import { money, getLocale } from '../lib/format';
+import { useTranslation } from '../hooks/useTranslation';
+const PILL = { achieved: 'ok', active: 'ok', today: 'warn', overdue: 'over', 'no-deadline': 'neutral', 'invalid-target': 'over' };
+const PILL_KEY = { achieved: 'achieved', active: 'active', today: 'today', overdue: 'overdue', 'no-deadline': 'noDeadline', 'invalid-target': 'invalid' };
+const fmtDate = (d) => d.toLocaleDateString(getLocale(), { year: 'numeric', month: 'long', day: 'numeric' }); // d is a local-midnight Date
 
 export default function ContributionPlanner({ goal, plan, onEdit }) {
+  const { t } = useTranslation();
   const { status: s, remaining, daysLeft, deadline } = plan; const c = goal.currency;
-  const [tone, label] = PILL[s];
+  const days = (n) => t('plan.days', { count: n });
   const edit = (text) => <button type="button" className="ghost" onClick={() => onEdit(goal)}>{text}</button>;
-  const tiles = [['Per day', plan.daily], ['Per week', plan.weekly], ['Per month', plan.monthly]];
+  const tiles = [['plan.perDay', plan.daily], ['plan.perWeek', plan.weekly], ['plan.perMonth', plan.monthly]];
   return (
     <details className="planner" open>
-      <summary><span>Contribution Planner</span><span className={'pill ' + tone}>{label}</span></summary>
+      <summary><span>{t('plan.title')}</span><span className={'pill ' + PILL[s]}>{t('plan.' + PILL_KEY[s])}</span></summary>
       <div className="planner-body">
-        {s === 'achieved' && <p className="planner-msg">You have reached this savings goal. Nothing more needs to be saved.</p>}
-        {s === 'active' && <p className="planner-msg"><b>Your savings goal is progressing!</b> To reach your target before {fmtDate(deadline)}, you should save approximately:</p>}
-        {s === 'today' && <p className="planner-msg">The deadline is <b>today</b>. You still need {money(remaining, c)}, so the target has to be completed today.</p>}
-        {s === 'overdue' && <p className="planner-msg">This goal passed its deadline ({fmtDate(deadline)}) {days(plan.overdueDays)} ago and {money(remaining, c)} is still needed. Set a new deadline to get a contribution plan.</p>}
-        {s === 'no-deadline' && <p className="planner-msg">Set a valid deadline to see how much to save each day, week or month.</p>}
-        {s === 'invalid-target' && <p className="planner-msg">Set a target amount above zero to calculate progress and contributions.</p>}
+        {s === 'achieved' && <p className="planner-msg">{t('plan.msgAchieved')}</p>}
+        {s === 'active' && <p className="planner-msg"><b>{t('plan.msgActiveA')}</b>{t('plan.msgActiveB', { date: fmtDate(deadline) })}</p>}
+        {s === 'today' && <p className="planner-msg">{t('plan.msgTodayA')}<b>{t('plan.todayWord')}</b>{t('plan.msgTodayB', { amount: money(remaining, c) })}</p>}
+        {s === 'overdue' && <p className="planner-msg">{t('plan.msgOverdue', { date: fmtDate(deadline), days: days(plan.overdueDays), amount: money(remaining, c) })}</p>}
+        {s === 'no-deadline' && <p className="planner-msg">{t('plan.msgNoDeadline')}</p>}
+        {s === 'invalid-target' && <p className="planner-msg">{t('plan.msgInvalid')}</p>}
 
         {s !== 'invalid-target' && (
           <dl className="planner-facts">
-            <div><dt>Remaining</dt><dd>{money(remaining, c)}</dd></div>
-            <div><dt>Days left</dt><dd>{daysLeft === null ? '—' : daysLeft < 0 ? `Overdue by ${days(plan.overdueDays)}` : daysLeft === 0 ? 'Due today' : days(daysLeft)}</dd></div>
-            <div><dt>Deadline</dt><dd>{deadline ? fmtDate(deadline) : 'Not set'}</dd></div>
+            <div><dt>{t('plan.remaining')}</dt><dd>{money(remaining, c)}</dd></div>
+            <div><dt>{t('plan.daysLeft')}</dt><dd>{daysLeft === null ? '—' : daysLeft < 0 ? t('plan.overdueBy', { days: days(plan.overdueDays) }) : daysLeft === 0 ? t('plan.today') : days(daysLeft)}</dd></div>
+            <div><dt>{t('plan.deadline')}</dt><dd>{deadline ? fmtDate(deadline) : t('plan.notSet')}</dd></div>
           </dl>
         )}
         {(s === 'active' || s === 'achieved') && (
           <>
-            <div className="planner-tiles">{tiles.map(([t, v]) => <div key={t} className={'planner-tile' + (s === 'achieved' ? ' zero' : '')}><span>{t}</span><b>{money(v, c)}</b></div>)}</div>
-            {s === 'active' && <p className="planner-note">Choose one schedule. These are alternatives, not amounts to pay together.</p>}
+            <div className="planner-tiles">{tiles.map(([k, v]) => <div key={k} className={'planner-tile' + (s === 'achieved' ? ' zero' : '')}><span>{t(k)}</span><b>{money(v, c)}</b></div>)}</div>
+            {s === 'active' && <p className="planner-note">{t('plan.note')}</p>}
           </>
         )}
-        {(s === 'overdue' || s === 'no-deadline' || s === 'invalid-target') && edit(s === 'invalid-target' ? 'Edit target' : 'Set deadline')}
+        {(s === 'overdue' || s === 'no-deadline' || s === 'invalid-target') && edit(s === 'invalid-target' ? t('plan.editTarget') : t('plan.setDeadline'))}
       </div>
     </details>
   );
